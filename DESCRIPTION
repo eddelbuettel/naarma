@@ -1,0 +1,14 @@
+Package: naarma
+Type: Package
+Title: Connect nanoarrow with (Rcpp)Armadillo
+Version: 0.0.1
+Date: 2024-12-17
+Author: Dirk Eddelbuettel
+Maintainer: Dirk Eddelbuettel <edd@debian.org>
+Description: The nanoarrow package offers C-level functionality to work with Arrow object,
+ along with a small amount of C++ integration. This package uses it to interact with Armadillo
+ objects. Some auxiliary testing facility from the nanoarrow package is included here as well.
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.11), RcppArmadillo, nanoarrow
+LinkingTo: Rcpp, RcppArmadillo, nanoarrow
+RoxygenNote: 6.0.1

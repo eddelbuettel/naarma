@@ -1,0 +1,14 @@
+PKG_CPPFLAGS = -I. -I../inst/include -Wno-sign-compare
+
+OBJECTS = \
+	RcppExports.o \
+	borrowed.o \
+	utilities.o \
+	wrapper.o \
+	nanoarrow/nanoarrow.o \
+	nanoarrow/nanoarrow_testing.o
+
+all:	$(SHLIB)
+
+clean:
+	rm -vf *.o *.so
