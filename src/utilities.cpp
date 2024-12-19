@@ -1,18 +1,8 @@
-#include <variant>
 
 #include <nanoarrow/nanoarrow.hpp>
 
 #include "utilities.h"
 #include "borrowed.h"
-
-typedef std::variant<arma::Col<int16_t>,
-                     arma::Col<uint16_t>,
-                     arma::Col<int32_t>,
-                     arma::Col<uint32_t>,
-                     arma::Col<int64_t>,
-                     arma::Col<uint64_t>,
-                     arma::Col<float>,
-                     arma::Col<double>> arma_vector_variant;
 
 template <typename T>
 arma::Col<T> na_array_to_arma_vec(const struct ArrowArray* arr) {
@@ -123,6 +113,8 @@ enum ArrowType na_format_to_enum(const std::string& txt) {
         return NANOARROW_TYPE_FLOAT;
     } else if (txt == std::string_view("g")) {
         return NANOARROW_TYPE_DOUBLE;
+    } else if (txt.substr(0, 3) == std::string_view("+w:")) {
+        return NANOARROW_TYPE_FIXED_SIZE_LIST;
     } else {
         error_exit(std::string("format '") + txt + std::string("' not supported"));
         return NANOARROW_TYPE_UNINITIALIZED; // not reached, but satisfies compiler ...

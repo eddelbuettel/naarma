@@ -5,12 +5,24 @@
 #define ARMA_64BIT_WORD 1       		// already default on amd64, but making it explicit
 #endif
 
+#include <variant>
 #include <armadillo>
 #include <nanoarrow/nanoarrow.hpp> 		// overall interface
 #include <nanoarrow/nanoarrow_testing.hpp>	// for from/to JSON utilities
 
+typedef std::variant<arma::Col<int16_t>,
+                     arma::Col<uint16_t>,
+                     arma::Col<int32_t>,
+                     arma::Col<uint32_t>,
+                     arma::Col<int64_t>,
+                     arma::Col<uint64_t>,
+                     arma::Col<float>,
+                     arma::Col<double>> arma_vector_variant;
+
 // declaration
 enum ArrowType na_format_to_enum(const std::string& txt);
+arma_vector_variant na_to_arma(const struct ArrowArray* arr, const struct ArrowSchema* sch);
+template <typename T> arma::Col<T> na_array_to_arma_vec(const struct ArrowArray* arr);
 
 inline void show_array(const struct ArrowArray* arr) {
     std::cout << "Array" << std::endl

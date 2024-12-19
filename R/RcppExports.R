@@ -30,3 +30,33 @@ structExample <- function(jsontxt, format) {
     .Call(`_naarma_structExample`, jsontxt, format)
 }
 
+#' Given a (nano)arrow object via two pointers, return an arma vector
+#'
+#' @section Limitations:
+#' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+#' vector columns. The framework used here could of course be extended to other Arrow formats.
+#'
+#' @param vec A nanoarrow object
+#' @param verbose A logical value, default is false
+#' @examples
+#' sv <- vectorExample(R"({"name": "vec", "count": 3, "VALIDITY": [1, 1, 1], "DATA": [2, 3, 4]})", "g")
+#' armaVectorExample(sv)
+armaVectorExample <- function(vec, verbose = FALSE) {
+    .Call(`_naarma_armaVectorExample`, vec, verbose)
+}
+
+#' Given a (nano)arrow object via two pointers, and a column size, return an arma matrix
+#'
+#' @section Limitations:
+#' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+#' vector columns. The framework used here could of course be extended to other Arrow formats.
+#'
+#' @param vec A nanoarrow object
+#' @param verbose A logical value, default is false
+#' @examples
+#' sv <- vectorExample(R"({"name": "vec", "count": 3, "VALIDITY": [1, 1, 1], "DATA": [2, 3, 4]})", "g")
+#' armaVectorExample(sv)
+armaMatrixExample <- function(vec, ncol, verbose = FALSE) {
+    .Call(`_naarma_armaMatrixExample`, vec, ncol, verbose)
+}
+

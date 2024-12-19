@@ -5,14 +5,14 @@
 #define ARMA_64BIT_WORD 1       		// even though do not use the package interface for ints
 #endif
 
-#include <RcppArmadillo/Lightest>
+#include <RcppArmadillo/Lighter>
 
 #include <nanoarrow/r.h>
 
 #include "utilities.h"
 #include "borrowed.h"
 
-// ' Create Vector Example
+// ' Create Nanoarrow Vector Example
 // '
 //' Given a JSON expressions and a string, return a vector
 //'
@@ -45,7 +45,7 @@ Rcpp::RObject vectorExample(std::string jsontxt, std::string format) {
     return sxparr;
 }
 
-// ' Create Struct of Vectors Examples
+// ' Create Nanoarrow Struct of Vectors Examples
 // '
 //' Given a vector of JSON expressions and a vector of format strings, return a struct
 //'
@@ -105,4 +105,120 @@ Rcpp::RObject structExample(std::vector<std::string> jsontxt, std::vector<std::s
     array_xptr_set_schema(sxparr, sxpsch); 							// embed schema in array
 
     return sxparr;
+}
+
+template <typename T>
+arma::Col<T> na_array_to_arma_vec(const struct ArrowArray* arr) {
+    // the final buffer has the values, there may be a validity buffer preceding it
+    // todo: flag (optional) validity values
+    return arma::Col<T>((T*) arr->buffers[arr->n_buffers - 1], arr->length, true, true);
+}
+
+arma::Col<double> na_pointers_to_arma_vec(struct ArrowArray* arr, struct ArrowSchema* sch) {
+    arma::Col<double> v(arr->length);
+
+    if (sch->format == std::string_view("g")) {
+        v = na_array_to_arma_vec<double>(arr);
+    } else if (sch->format == std::string_view("s")) {
+        auto w = na_array_to_arma_vec<int16_t>(arr);
+        v = arma::conv_to<arma::Col<double>>::from(w);
+    } else if (sch->format == std::string_view("S")) {
+        auto w = na_array_to_arma_vec<uint16_t>(arr);
+        v = arma::conv_to<arma::Col<double>>::from(w);
+    } else if (sch->format == std::string_view("i")) {
+        auto w = na_array_to_arma_vec<int32_t>(arr);
+        v = arma::conv_to<arma::Col<double>>::from(w);
+    } else if (sch->format == std::string_view("I")) {
+        auto w = na_array_to_arma_vec<uint32_t>(arr);
+        v = arma::conv_to<arma::Col<double>>::from(w);
+    } else if (sch->format == std::string_view("l")) {
+        auto w = na_array_to_arma_vec<int64_t>(arr);
+        v = arma::conv_to<arma::Col<double>>::from(w);
+    } else if (sch->format == std::string_view("L")) {
+        auto w = na_array_to_arma_vec<uint64_t>(arr);
+        v = arma::conv_to<arma::Col<double>>::from(w);
+    } else if (sch->format == std::string_view("f")) {
+        auto w = na_array_to_arma_vec<float>(arr);
+        v = arma::conv_to<arma::Col<double>>::from(w);
+    } else {
+        error_exit(std::string("format '") + std::string(sch->format) + std::string("' not supported"));
+    }
+    return v;
+}
+
+// ' Create Arma Vector from Nanoarrow Vector Example
+// '
+//' Given a (nano)arrow object via two pointers, return an arma vector
+//'
+//' @section Limitations:
+//' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+//' vector columns. The framework used here could of course be extended to other Arrow formats.
+//'
+//' @param vec A nanoarrow object
+//' @param verbose A logical value, default is false
+//' @examples
+//' sv <- vectorExample(R"({"name": "vec", "count": 3, "VALIDITY": [1, 1, 1], "DATA": [2, 3, 4]})", "g")
+//' armaVectorExample(sv)
+// [[Rcpp::export]]
+SEXP armaVectorExample(Rcpp::RObject vec, bool verbose = false) {
+    // We get an R-created 'nanoarrow_array', an S3 class around an external pointer
+    if (!Rf_inherits(vec, "nanoarrow_array"))
+        Rcpp::stop("Expected class 'nanoarrow_array' not found");
+
+    // It is a straight up external pointer so we can use R_ExternalPtrAddr()
+    struct ArrowArray* arr = (struct ArrowArray*)R_ExternalPtrAddr(vec);
+    // As it is a nanoarrow thing, we can also get the schema from the array _tag_ xptr
+    struct ArrowSchema* sch = (struct ArrowSchema*)R_ExternalPtrAddr(R_ExternalPtrTag(vec));
+
+    if (verbose) {
+        show_array(arr);
+        show_schema(sch);
+    }
+
+    auto v = na_pointers_to_arma_vec(arr, sch);
+
+    if (verbose)
+        v.print("v");
+
+    //auto sztvec = arma::conv_to<arma::Col<size_t>>::from(v);
+    //return Rcpp::wrap(sztvec);
+    return Rcpp::wrap(v);
+}
+
+// ' Create Arma Matrix from Nanoarrow Vector Example
+// '
+//' Given a (nano)arrow object via two pointers, and a column size, return an arma matrix
+//'
+//' @section Limitations:
+//' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+//' vector columns. The framework used here could of course be extended to other Arrow formats.
+//'
+//' @param vec A nanoarrow object
+//' @param verbose A logical value, default is false
+//' @examples
+//' sv <- vectorExample(R"({"name": "vec", "count": 3, "VALIDITY": [1, 1, 1], "DATA": [2, 3, 4]})", "g")
+//' armaVectorExample(sv)
+// [[Rcpp::export]]
+SEXP armaMatrixExample(Rcpp::RObject vec, int ncol, bool verbose = false) {
+    // We get an R-created 'nanoarrow_array', an S3 class around an external pointer
+    if (!Rf_inherits(vec, "nanoarrow_array"))
+        Rcpp::stop("Expected class 'nanoarrow_array' not found");
+
+    // It is a straight up external pointer so we can use R_ExternalPtrAddr()
+    struct ArrowArray* arr = (struct ArrowArray*)R_ExternalPtrAddr(vec);
+    // As it is a nanoarrow thing, we can also get the schema from the array _tag_ xptr
+    struct ArrowSchema* sch = (struct ArrowSchema*)R_ExternalPtrAddr(R_ExternalPtrTag(vec));
+
+    if (verbose) {
+        show_array(arr);
+        show_schema(sch);
+    }
+
+    auto v = na_pointers_to_arma_vec(arr, sch);
+
+    if (verbose)
+        v.print("v");
+
+    auto n = arma::mat(v).reshape(v.n_elem/ncol, ncol);
+    return Rcpp::wrap(n);
 }

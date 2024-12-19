@@ -35,10 +35,37 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// armaVectorExample
+SEXP armaVectorExample(Rcpp::RObject vec, bool verbose);
+RcppExport SEXP _naarma_armaVectorExample(SEXP vecSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type vec(vecSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(armaVectorExample(vec, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// armaMatrixExample
+SEXP armaMatrixExample(Rcpp::RObject vec, int ncol, bool verbose);
+RcppExport SEXP _naarma_armaMatrixExample(SEXP vecSEXP, SEXP ncolSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type vec(vecSEXP);
+    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(armaMatrixExample(vec, ncol, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_naarma_vectorExample", (DL_FUNC) &_naarma_vectorExample, 2},
     {"_naarma_structExample", (DL_FUNC) &_naarma_structExample, 2},
+    {"_naarma_armaVectorExample", (DL_FUNC) &_naarma_armaVectorExample, 2},
+    {"_naarma_armaMatrixExample", (DL_FUNC) &_naarma_armaMatrixExample, 3},
     {NULL, NULL, 0}
 };
 

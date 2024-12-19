@@ -1,4 +1,8 @@
 
+// these functions are variants of something alredy in nanoarrow but not currently (or,
+// at least not when I first needed them) exported to they are carried over here in a
+// additional file marked 'borrowed.{cpp,h}'
+
 #include "borrowed.h"
 
 // Attaches a schema to an array external pointer. The nanoarrow R package
@@ -6,6 +10,13 @@
 void array_xptr_set_schema(SEXP array_xptr, SEXP schema_xptr) {
     R_SetExternalPtrTag(array_xptr, schema_xptr);
 }
+
+// Retrieves the schema embedded in the tag. The nanoarrow R packages does this
+// to 'transport two XPtr in onw'
+SEXP array_xptr_get_schema(SEXP array_xptr) {
+    return R_ExternalPtrTag(array_xptr);
+}
+
 
 // nanoarrow_c_array_set_schema from array.c
 SEXP nanoarrow_c_array_set_schema(SEXP array_xptr, SEXP schema_xptr, SEXP validate_sexp) {
