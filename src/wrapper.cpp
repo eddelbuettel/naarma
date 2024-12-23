@@ -196,8 +196,8 @@ SEXP armaVectorExample(Rcpp::RObject vec, bool verbose = false) {
 //' @param vec A nanoarrow object
 //' @param verbose A logical value, default is false
 //' @examples
-//' sv <- vectorExample(R"({"name": "vec", "count": 3, "VALIDITY": [1, 1, 1], "DATA": [2, 3, 4]})", "g")
-//' armaVectorExample(sv)
+//' sv <- vectorExample(R"({"name": "vec", "count": 4, "VALIDITY": [1, 1, 1, 1], "DATA": [2, 3, 4, 5]})", "g")
+//' armaMatrixExample(sv, 2)
 // [[Rcpp::export]]
 SEXP armaMatrixExample(Rcpp::RObject vec, int ncol, bool verbose = false) {
     // We get an R-created 'nanoarrow_array', an S3 class around an external pointer

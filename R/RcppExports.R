@@ -54,8 +54,8 @@ armaVectorExample <- function(vec, verbose = FALSE) {
 #' @param vec A nanoarrow object
 #' @param verbose A logical value, default is false
 #' @examples
-#' sv <- vectorExample(R"({"name": "vec", "count": 3, "VALIDITY": [1, 1, 1], "DATA": [2, 3, 4]})", "g")
-#' armaVectorExample(sv)
+#' sv <- vectorExample(R"({"name": "vec", "count": 4, "VALIDITY": [1, 1, 1, 1], "DATA": [2, 3, 4, 5]})", "g")
+#' armaMatrixExample(sv, 2)
 armaMatrixExample <- function(vec, ncol, verbose = FALSE) {
     .Call(`_naarma_armaMatrixExample`, vec, ncol, verbose)
 }
