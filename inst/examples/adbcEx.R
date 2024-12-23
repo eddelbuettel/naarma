@@ -1,12 +1,27 @@
 
+## Use duckdb with the adbc driver
 library(adbcdrivermanager)
 library(duckdb)
 db <- adbc_database_init(duckdb_adbc())
 con <- adbc_connection_init(db)
+
+## Data into duckdb
 execute_adbc(con, "LOAD httpfs")
 execute_adbc(con, "CREATE TABLE covertypeData AS SELECT * FROM 'https://www.mlpack.org/datasets/covertype-small.data.csv.gz';")
 execute_adbc(con, "CREATE TABLE covertypeLabels AS SELECT * FROM 'https://www.mlpack.org/datasets/covertype-small.labels.csv.gz';")
+
+## Query duckdb via adbc, get arrow streams, convert those
 nadata <- read_adbc(con, "SELECT * from covertypeData")  # return a array stream object
-D <- nanoarrow::convert_array_stream(nadata)  # now D is a data.frame
-nadata <- read_adbc(con, "SELECT * from covertypeLabels")  # return a array stream object
-L <- nanoarrow::convert_array_stream(nadata)  # now L is a one-column data.frame
+D <- nanoarrow::convert_array_stream(nadata)  	# now D is a data.frame
+nalabels <- read_adbc(con, "SELECT * from covertypeLabels")  # return a array stream object
+L <- nanoarrow::convert_array_stream(nalabels)  # now L is a one-column data.frame
+
+trainInd <- 1:70000
+testInd <- 70001:100000
+fit <- mlpack::random_forest(training=as.matrix(D[trainInd,]),
+                             labels=as.matrix(L[trainInd, "column0"]),
+                             num_trees=10, minimum_leaf_size=3,
+                             print_training_accuracy=TRUE,
+                             test=as.matrix(D[testInd,]),
+                             test_labels=as.matrix(L[testInd, "column0"]),
+                             verbose=TRUE)
