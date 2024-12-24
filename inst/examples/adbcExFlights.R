@@ -1,4 +1,9 @@
 
+## Use duckdb with the adbc driver
+library(adbcdrivermanager)
+library(duckdb)
+db <- adbc_database_init(duckdb_adbc())
+
 con <- adbc_connection_init(db)
 
 # Write a table
