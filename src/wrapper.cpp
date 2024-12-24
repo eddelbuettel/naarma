@@ -234,17 +234,27 @@ SEXP collectFromStream(Rcpp::RObject obj, bool verbose = false) {
     struct ArrowError ec;
     exitIfError(ArrowArrayStreamGetSchema(aas.get(), sch.get(), &ec), "Bad schema");
     if (verbose) show_schema(sch.get());
-    std::list<nanoarrow::UniqueArray> lst;
+    std::vector<nanoarrow::UniqueArray> vec;
     while (true) {
         nanoarrow::UniqueArray arr;
         exitIfError(ArrowArrayStreamGetNext(aas.get(), arr.get(), &ec), "Bad array");
-        if (verbose) show_array(arr.get());
         if (arr->length == 0)
             break;
+        if (verbose) show_array(arr.get());
         cnt += arr->length;
-        lst.emplace_back(std::move(arr));
+        vec.emplace_back(std::move(arr));
         //Rcpp::Rcout << "Count now " << cnt << std::endl;
     }
     Rcpp::Rcout << "Final Count is " << cnt << std::endl;
-    return R_NilValue;
+
+    nanoarrow::VectorArrayStream vas(sch.get(), std::move(vec));// make vectorstream from schema and vector<uniquearrays>
+    nanoarrow::UniqueArrayStream newstream;                     // create new arraystream (to coontain single element stream)
+    vas.ToArrayStream(newstream.get());                         // export the vectorstream to the new array strea,
+
+    auto asxptr = nanoarrow_array_stream_owning_xptr();			// prepare xptr
+
+    struct ArrowArrayStream* str = (struct ArrowArrayStream*)R_ExternalPtrAddr(asxptr); // get ptr
+    ArrowArrayStreamMove(newstream.get(), str); 				// and move content
+
+    return asxptr;
 }
