@@ -60,3 +60,7 @@ armaMatrixExample <- function(vec, ncol, verbose = FALSE) {
     .Call(`_naarma_armaMatrixExample`, vec, ncol, verbose)
 }
 
+collectFromStream <- function(obj, verbose = FALSE) {
+    .Call(`_naarma_collectFromStream`, obj, verbose)
+}
+

@@ -60,12 +60,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// collectFromStream
+SEXP collectFromStream(Rcpp::RObject obj, bool verbose);
+RcppExport SEXP _naarma_collectFromStream(SEXP objSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type obj(objSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(collectFromStream(obj, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_naarma_vectorExample", (DL_FUNC) &_naarma_vectorExample, 2},
     {"_naarma_structExample", (DL_FUNC) &_naarma_structExample, 2},
     {"_naarma_armaVectorExample", (DL_FUNC) &_naarma_armaVectorExample, 2},
     {"_naarma_armaMatrixExample", (DL_FUNC) &_naarma_armaMatrixExample, 3},
+    {"_naarma_collectFromStream", (DL_FUNC) &_naarma_collectFromStream, 2},
     {NULL, NULL, 0}
 };
 

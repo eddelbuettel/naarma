@@ -222,3 +222,29 @@ SEXP armaMatrixExample(Rcpp::RObject vec, int ncol, bool verbose = false) {
     auto n = arma::mat(v).reshape(v.n_elem/ncol, ncol);
     return Rcpp::wrap(n);
 }
+
+// [[Rcpp::export]]
+SEXP collectFromStream(Rcpp::RObject obj, bool verbose = false) {
+    if (!Rf_inherits(obj, "nanoarrow_array_stream"))
+        Rcpp::stop("Expected class 'nanoarrow_array_stream' not found");
+
+    nanoarrow::UniqueArrayStream aas{(struct ArrowArrayStream*)R_ExternalPtrAddr(obj)};
+    nanoarrow::UniqueSchema sch;
+    int cnt = 0;
+    struct ArrowError ec;
+    exitIfError(ArrowArrayStreamGetSchema(aas.get(), sch.get(), &ec), "Bad schema");
+    if (verbose) show_schema(sch.get());
+    std::list<nanoarrow::UniqueArray> lst;
+    while (true) {
+        nanoarrow::UniqueArray arr;
+        exitIfError(ArrowArrayStreamGetNext(aas.get(), arr.get(), &ec), "Bad array");
+        if (verbose) show_array(arr.get());
+        if (arr->length == 0)
+            break;
+        cnt += arr->length;
+        lst.emplace_back(std::move(arr));
+        //Rcpp::Rcout << "Count now " << cnt << std::endl;
+    }
+    Rcpp::Rcout << "Final Count is " << cnt << std::endl;
+    return R_NilValue;
+}
