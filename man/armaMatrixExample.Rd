@@ -23,8 +23,6 @@ vector columns. The framework used here could of course be extended to other Arr
 }
 
 \examples{
-sv <- vectorExample(R"({"name": "vec", "count": 4,
-                        "VALIDITY": [1, 1, 1, 1],
-                        "DATA": [2, 3, 4, 5]})", "g")
+sv <- nanoarrow::as_nanoarrow_array(c(4:8), nanoarrow::na_int16())  # internally int16
 armaMatrixExample(sv, 2)
 }

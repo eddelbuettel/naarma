@@ -5,8 +5,7 @@ OBJECTS = \
 	borrowed.o \
 	utilities.o \
 	wrapper.o \
-	nanoarrow/nanoarrow.o \
-	nanoarrow/nanoarrow_testing.o
+	nanoarrow/nanoarrow.o
 
 all:	$(SHLIB)
 

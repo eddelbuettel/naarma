@@ -7,7 +7,6 @@
 
 #include <variant>
 #include <nanoarrow/nanoarrow.hpp> 			// overall interface
-#include <nanoarrow/nanoarrow_testing.hpp>	// for from/to JSON utilities
 #include <RcppArmadillo/Lightest>			// also for Rcout/Rcerr, stop
 
 typedef std::variant<arma::Col<int16_t>,
@@ -51,31 +50,4 @@ inline void error_exit(const std::string& txt) {
 
 inline void exitIfError(const ArrowErrorCode ec, const std::string& msg) {
     if (ec != NANOARROW_OK) error_exit(msg);
-}
-
-inline void read_vector_from_json(const std::string& txt, struct ArrowArray* arr, struct ArrowSchema* sch) {
-    ArrowError error;
-    error.message[0] = '\0';
-    nanoarrow::testing::TestingJSONReader reader;
-    auto rc = reader.ReadColumn(txt, sch, arr, &error);
-    if (rc != NANOARROW_OK)
-        error_exit(error.message);
-}
-
-inline void display_as_json(const struct ArrowArray* arr, const struct ArrowSchema* sch) {
-    nanoarrow::UniqueArrayView array_view;
-    struct ArrowError ec;
-    if (NANOARROW_OK != ArrowArrayViewInitFromSchema(array_view.get(), sch, &ec))
-        error_exit(ec.message);
-    if (NANOARROW_OK != ArrowArrayViewSetArray(array_view.get(), arr, &ec))
-        error_exit(ec.message);
-
-    nanoarrow::testing::TestingJSONWriter jsonwriter;
-    std::stringstream str_out;
-
-    str_out << "COLUMN: ";
-    jsonwriter.WriteColumn(str_out, sch, array_view.get());
-    str_out << std::endl;
-
-    Rcpp::Rcout << str_out.str();
 }

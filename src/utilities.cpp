@@ -11,20 +11,6 @@ arma::Col<T> na_array_to_arma_vec(const struct ArrowArray* arr) {
     return arma::Col<T>((T*) arr->buffers[arr->n_buffers - 1], arr->length, true, true);
 }
 
-auto json_to_na(const std::string& json, enum ArrowType tp) {
-    nanoarrow::UniqueArray arr;
-    nanoarrow::UniqueSchema sch;
-    struct ArrowError ec;
-    if (NANOARROW_OK != ArrowSchemaInitFromType(sch.get(), tp))
-        error_exit("Bad init");
-    if (NANOARROW_OK != ArrowArrayInitFromSchema(arr.get(), sch.get(), &ec))
-        error_exit(ec.message);
-
-    read_vector_from_json(json, arr.get(), sch.get());
-
-    return std::pair(std::move(arr), std::move(sch));
-}
-
 arma_vector_variant na_to_arma(const struct ArrowArray* arr, const struct ArrowSchema* sch) {
    if (sch->format == std::string_view("s")) {
         return na_array_to_arma_vec<int16_t>(arr);
@@ -46,20 +32,6 @@ arma_vector_variant na_to_arma(const struct ArrowArray* arr, const struct ArrowS
         error_exit(std::string("format '") + std::string(sch->format) + std::string("' not supported"));
         return na_array_to_arma_vec<int64_t>(arr); // not reached, but satisfies compiler ...
     }
-}
-
-arma_vector_variant json_to_arma_vec(const std::string& json, enum ArrowType tp, bool verbose = false) {
-    auto pp = json_to_na(json, tp);
-    auto arr = pp.first.get();
-    auto sch = pp.second.get();
-
-    if (verbose) {
-        show_array(arr);
-        show_schema(sch);
-        display_as_json(arr, sch);
-    }
-
-    return na_to_arma(arr, sch);
 }
 
 // example 'variant to double' mapper

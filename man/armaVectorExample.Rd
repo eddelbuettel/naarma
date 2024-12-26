@@ -2,17 +2,19 @@
 % Please edit documentation in R/RcppExports.R
 \name{armaVectorExample}
 \alias{armaVectorExample}
-\title{Given a (nano)arrow object via two pointers, return an arma vector}
+\title{Given a (nano)arrow array external pointer object via two pointers (with the second tucked
+away as the tag), return an arma vector}
 \usage{
 armaVectorExample(vec, verbose = FALSE)
 }
 \arguments{
-\item{vec}{A nanoarrow object}
+\item{vec}{A nanoarrow array object as an external pointer}
 
 \item{verbose}{A logical value, default is false}
 }
 \description{
-Given a (nano)arrow object via two pointers, return an arma vector
+Given a (nano)arrow array external pointer object via two pointers (with the second tucked
+away as the tag), return an arma vector
 }
 \section{Limitations}{
 
@@ -21,8 +23,6 @@ vector columns. The framework used here could of course be extended to other Arr
 }
 
 \examples{
-sv <- vectorExample(R"({"name": "vec", "count": 3,
-                        "VALIDITY": [1, 1, 1],
-                        "DATA": [2, 3, 4]})", "g")
+sv <- nanoarrow::as_nanoarrow_array(c(4:7), nanoarrow::na_int16())  # internally int16
 armaVectorExample(sv)
 }

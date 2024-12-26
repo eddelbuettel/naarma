@@ -26,9 +26,7 @@ jobs:
         uses: eddelbuettel/github-actions/r-ci@master
 
       - name: Dependencies
-        run: |
-          ./run.sh install_deps
-          ./run.sh install_aptget nlohmann-json3-dev
+        run: ./run.sh install_deps
 
       - name: Test
         run: ./run.sh run_tests
