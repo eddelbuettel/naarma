@@ -223,8 +223,10 @@ SEXP armaMatrixExample(Rcpp::RObject vec, int ncol, bool verbose = false) {
     return Rcpp::wrap(n);
 }
 
+// NB This is currently overly simple and assumes a double matrix
+//
 // [[Rcpp::export]]
-SEXP collectFromStream(Rcpp::RObject obj, bool verbose = false) {
+Rcpp::NumericMatrix collectFromStream(Rcpp::RObject obj, bool verbose = false) {
     if (!Rf_inherits(obj, "nanoarrow_array_stream"))
         Rcpp::stop("Expected class 'nanoarrow_array_stream' not found");
 
@@ -243,18 +245,38 @@ SEXP collectFromStream(Rcpp::RObject obj, bool verbose = false) {
         if (verbose) show_array(arr.get());
         cnt += arr->length;
         vec.emplace_back(std::move(arr));
-        //Rcpp::Rcout << "Count now " << cnt << std::endl;
+        Rcpp::Rcout << "Count now " << cnt << std::endl;
     }
-    Rcpp::Rcout << "Final Count is " << cnt << std::endl;
+    Rcpp::Rcout << "Final Count is " << cnt << " "
+                << "Cols is " << sch->n_children << std::endl;
 
-    nanoarrow::VectorArrayStream vas(sch.get(), std::move(vec));// make vectorstream from schema and vector<uniquearrays>
-    nanoarrow::UniqueArrayStream newstream;                     // create new arraystream (to coontain single element stream)
-    vas.ToArrayStream(newstream.get());                         // export the vectorstream to the new array strea,
+    // This constructs a new array stream from the vector
+    // nanoarrow::VectorArrayStream vas(sch.get(), std::move(vec));// make vectorstream from schema and vector<uniquearrays>
+    // nanoarrow::UniqueArrayStream newstream;                     // create new arraystream (to coontain single element stream)
+    // vas.ToArrayStream(newstream.get());                         // export the vectorstream to the new array strea,
 
-    auto asxptr = nanoarrow_array_stream_owning_xptr();			// prepare xptr
+    // auto asxptr = nanoarrow_array_stream_owning_xptr();			// prepare xptr
 
-    struct ArrowArrayStream* str = (struct ArrowArrayStream*)R_ExternalPtrAddr(asxptr); // get ptr
-    ArrowArrayStreamMove(newstream.get(), str); 				// and move content
+    // struct ArrowArrayStream* str = (struct ArrowArrayStream*)R_ExternalPtrAddr(asxptr); // get ptr
+    // ArrowArrayStreamMove(newstream.get(), str); 				// and move content
 
-    return asxptr;
+    int n = cnt, k = sch->n_children, chunks = vec.size(), currpos = 0;
+    arma::mat m(n, k);
+    for (auto i = 0; i < chunks; i++) {
+        nanoarrow::UniqueArray arr = std::move(vec[i]);
+        for (auto j = 0; j < k; j++) {
+            if (verbose)
+                Rcpp::Rcout << "Chunk " << i << " "
+                            << "currpos " << currpos << " "
+                            << "col " << j << std::endl;
+            double* mem = m.colptr(j);
+            double* colptr = (double*) arr->children[j]->buffers[1];
+            std::memcpy((void*) &(mem[currpos]),
+                        (void*) &(colptr[currpos]),
+                        arr->length * sizeof(double));
+        }
+        currpos += arr->length;
+    }
+    if (verbose) m.print("m");
+    return Rcpp::as<Rcpp::NumericMatrix>(Rcpp::wrap(m));
 }
