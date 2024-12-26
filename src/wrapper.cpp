@@ -3,6 +3,7 @@
 
 #if !defined(ARMA_64BIT_WORD)
 #define ARMA_64BIT_WORD 1       		// even though do not use the package interface for ints
+										// note that we also need to define it in Makevars for all files
 #endif
 
 #include <RcppArmadillo/Lighter>
@@ -226,7 +227,7 @@ SEXP armaMatrixExample(Rcpp::RObject vec, int ncol, bool verbose = false) {
 // NB This is currently overly simple and assumes a double matrix
 //
 // [[Rcpp::export]]
-Rcpp::NumericMatrix collectFromStream(Rcpp::RObject obj, bool verbose = false) {
+arma::mat collectFromStream(Rcpp::RObject obj, bool verbose = false) {
     if (!Rf_inherits(obj, "nanoarrow_array_stream"))
         Rcpp::stop("Expected class 'nanoarrow_array_stream' not found");
 
@@ -245,10 +246,10 @@ Rcpp::NumericMatrix collectFromStream(Rcpp::RObject obj, bool verbose = false) {
         if (verbose) show_array(arr.get());
         cnt += arr->length;
         vec.emplace_back(std::move(arr));
-        Rcpp::Rcout << "Count now " << cnt << std::endl;
+        if (verbose) Rcpp::Rcout << "Count now " << cnt << std::endl;
     }
-    Rcpp::Rcout << "Final Count is " << cnt << " "
-                << "Cols is " << sch->n_children << std::endl;
+    if (verbose) Rcpp::Rcout << "Final Count is " << cnt << " "
+                             << "Cols is " << sch->n_children << std::endl;
 
     // This constructs a new array stream from the vector
     // nanoarrow::VectorArrayStream vas(sch.get(), std::move(vec));// make vectorstream from schema and vector<uniquearrays>
@@ -280,5 +281,5 @@ Rcpp::NumericMatrix collectFromStream(Rcpp::RObject obj, bool verbose = false) {
         currpos += arr->length;
     }
     if (verbose) m.print("m");
-    return Rcpp::as<Rcpp::NumericMatrix>(Rcpp::wrap(m));
+    return m;
 }

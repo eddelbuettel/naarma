@@ -61,7 +61,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // collectFromStream
-Rcpp::NumericMatrix collectFromStream(Rcpp::RObject obj, bool verbose);
+arma::mat collectFromStream(Rcpp::RObject obj, bool verbose);
 RcppExport SEXP _naarma_collectFromStream(SEXP objSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
