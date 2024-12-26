@@ -16,7 +16,7 @@ Given a vector of JSON expressions and a vector of format strings, return a stru
 }
 \section{Limitations}{
 
-As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+As this aims at \pkg{armadillo} operations, this functionality is limited to numeric
 vector columns. The framework used here could of course be extended to other Arrow formats.
 }
 

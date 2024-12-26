@@ -16,7 +16,7 @@ Given a (nano)arrow object via two pointers, return an arma vector
 }
 \section{Limitations}{
 
-As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+As this aims at \pkg{armadillo} interoperation, this functionality is limited to numeric
 vector columns. The framework used here could of course be extended to other Arrow formats.
 }
 

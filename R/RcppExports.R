@@ -4,7 +4,7 @@
 #' Given a JSON expressions and a string, return a vector
 #'
 #' @section Limitations:
-#' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+#' As this aims at \pkg{armadillo} operation, this functionality is limited to numeric
 #' vector columns. The framework used here could of course be extended to other Arrow formats.
 #'
 #' @param jsontxt A JSON string (as understood by \pkg{nanoarrow} testing helper code)s
@@ -18,7 +18,7 @@ vectorExample <- function(jsontxt, format) {
 #' Given a vector of JSON expressions and a vector of format strings, return a struct
 #'
 #' @section Limitations:
-#' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+#' As this aims at \pkg{armadillo} operations, this functionality is limited to numeric
 #' vector columns. The framework used here could of course be extended to other Arrow formats.
 #'
 #' @param jsontxt A vector of JSON strings (as understood by \pkg{nanoarrow} testing helper code)s
@@ -33,7 +33,7 @@ structExample <- function(jsontxt, format) {
 #' Given a (nano)arrow object via two pointers, return an arma vector
 #'
 #' @section Limitations:
-#' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+#' As this aims at \pkg{armadillo} interoperation, this functionality is limited to numeric
 #' vector columns. The framework used here could of course be extended to other Arrow formats.
 #'
 #' @param vec A nanoarrow object
@@ -48,7 +48,7 @@ armaVectorExample <- function(vec, verbose = FALSE) {
 #' Given a (nano)arrow object via two pointers, and a column size, return an arma matrix
 #'
 #' @section Limitations:
-#' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+#' As this aims at \pkg{armadillo} operations, this functionality is limited to numeric
 #' vector columns. The framework used here could of course be extended to other Arrow formats.
 #'
 #' @param vec A nanoarrow object
@@ -60,7 +60,15 @@ armaMatrixExample <- function(vec, ncol, verbose = FALSE) {
     .Call(`_naarma_armaMatrixExample`, vec, ncol, verbose)
 }
 
-collectFromStream <- function(obj, verbose = FALSE) {
-    .Call(`_naarma_collectFromStream`, obj, verbose)
+#' Given a (nano)arrow stream object pointer, return an arma matrix
+#'
+#' @section Limitations:
+#' As this aims at \pkg{armadillo} operation, the returned matrix is always double while
+#' supported many possible column types.
+#'
+#' @param obj A nanoarrow array stream object via an external pointer
+#' @param verbose A logical value, default is false
+collectMatrixFromStream <- function(obj, verbose = FALSE) {
+    .Call(`_naarma_collectMatrixFromStream`, obj, verbose)
 }
 

@@ -18,7 +18,7 @@
 //' Given a JSON expressions and a string, return a vector
 //'
 //' @section Limitations:
-//' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+//' As this aims at \pkg{armadillo} operation, this functionality is limited to numeric
 //' vector columns. The framework used here could of course be extended to other Arrow formats.
 //'
 //' @param jsontxt A JSON string (as understood by \pkg{nanoarrow} testing helper code)s
@@ -51,7 +51,7 @@ Rcpp::RObject vectorExample(std::string jsontxt, std::string format) {
 //' Given a vector of JSON expressions and a vector of format strings, return a struct
 //'
 //' @section Limitations:
-//' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+//' As this aims at \pkg{armadillo} operations, this functionality is limited to numeric
 //' vector columns. The framework used here could of course be extended to other Arrow formats.
 //'
 //' @param jsontxt A vector of JSON strings (as understood by \pkg{nanoarrow} testing helper code)s
@@ -152,7 +152,7 @@ arma::Col<double> na_pointers_to_arma_vec(struct ArrowArray* arr, struct ArrowSc
 //' Given a (nano)arrow object via two pointers, return an arma vector
 //'
 //' @section Limitations:
-//' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+//' As this aims at \pkg{armadillo} interoperation, this functionality is limited to numeric
 //' vector columns. The framework used here could of course be extended to other Arrow formats.
 //'
 //' @param vec A nanoarrow object
@@ -191,7 +191,7 @@ SEXP armaVectorExample(Rcpp::RObject vec, bool verbose = false) {
 //' Given a (nano)arrow object via two pointers, and a column size, return an arma matrix
 //'
 //' @section Limitations:
-//' As this aims at \pkg{armadillo} interoperation, thie functionality is limited to numeric
+//' As this aims at \pkg{armadillo} operations, this functionality is limited to numeric
 //' vector columns. The framework used here could of course be extended to other Arrow formats.
 //'
 //' @param vec A nanoarrow object
@@ -224,10 +224,19 @@ SEXP armaMatrixExample(Rcpp::RObject vec, int ncol, bool verbose = false) {
     return Rcpp::wrap(n);
 }
 
-// NB This is currently overly simple and assumes a double matrix
-//
+// ' Create Arma Matrix from Nanoarrow Array Stream
+// '
+//' Given a (nano)arrow stream object pointer, return an arma matrix
+//'
+//' @section Limitations:
+//' As this aims at \pkg{armadillo} operation, the returned matrix is always double while
+//' supported many possible column types.
+//'
+//' @param obj A nanoarrow array stream object via an external pointer
+//' @param verbose A logical value, default is false
 // [[Rcpp::export]]
-arma::mat collectFromStream(Rcpp::RObject obj, bool verbose = false) {
+arma::mat collectMatrixFromStream(Rcpp::RObject obj, bool verbose = false) {
+
     if (!Rf_inherits(obj, "nanoarrow_array_stream"))
         Rcpp::stop("Expected class 'nanoarrow_array_stream' not found");
 
@@ -262,7 +271,6 @@ arma::mat collectFromStream(Rcpp::RObject obj, bool verbose = false) {
     // ArrowArrayStreamMove(newstream.get(), str); 				// and move content
 
 
-    // TODO: assert all columns are in fact double, else templatetize the segment
     // TODO: assert no missing values
     int n = cnt,                								// rows in the matrix we create
         k = sch->n_children,                					// columns in the matrix we create

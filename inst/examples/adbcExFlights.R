@@ -22,11 +22,11 @@ write_adbc(data.frame(ind = 1:2200, val=seq(2200,1,by=-1)), con, "flights")
 #nadata <- read_adbc(con, "SELECT * from flights")  # return a array stream object
 #D <- nanoarrow::convert_array_stream(nadata)  	# now D is a data.frame
 #print(str(D))
-
+#q()
 nadata <- read_adbc(con, "SELECT * FROM flights")  # return a array stream object
 
 #print(nadata)
 #print(nadata$get_schema())
 #print(nadata$get_next())
-ns <- collectFromStream(nadata, verbose=FALSE)
+ns <- collectMatrixFromStream(nadata, verbose=FALSE)
 print(str(ns))
