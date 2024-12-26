@@ -9,6 +9,8 @@ armaMatrixExample(vec, ncol, verbose = FALSE)
 \arguments{
 \item{vec}{A nanoarrow object}
 
+\item{ncol}{Number of columns in returned matrix}
+
 \item{verbose}{A logical value, default is false}
 }
 \description{
@@ -21,6 +23,8 @@ vector columns. The framework used here could of course be extended to other Arr
 }
 
 \examples{
-sv <- vectorExample(R"({"name": "vec", "count": 4, "VALIDITY": [1, 1, 1, 1], "DATA": [2, 3, 4, 5]})", "g")
+sv <- vectorExample(R"({"name": "vec", "count": 4,
+                        "VALIDITY": [1, 1, 1, 1],
+                        "DATA": [2, 3, 4, 5]})", "g")
 armaMatrixExample(sv, 2)
 }

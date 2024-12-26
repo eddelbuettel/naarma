@@ -9,6 +9,6 @@ Description: The nanoarrow package offers C-level functionality to work with Arr
  along with a small amount of C++ integration. This package uses it to interact with Armadillo
  objects. Some auxiliary testing facility from the nanoarrow package is included here as well.
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.11), RcppArmadillo, nanoarrow
+Imports: Rcpp (>= 1.0.11), nanoarrow
 LinkingTo: Rcpp, RcppArmadillo, nanoarrow
 RoxygenNote: 6.0.1

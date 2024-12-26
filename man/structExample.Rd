@@ -21,6 +21,8 @@ vector columns. The framework used here could of course be extended to other Arr
 }
 
 \examples{
-structExample(rep(R"({"name": "vec", "count": 3, "VALIDITY": [1, 1, 1], "DATA": ["2", "3", "4"]})",2), c("S", "L"))
+structExample(rep(R"({"name": "vec", "count": 3,
+                      "VALIDITY": [1, 1, 1],
+                      "DATA": ["2", "3", "4"]})",2), c("S", "L"))
 # also pipe above into either `tibble::as_tibble()` (converts data) or `arrow::as_record_batch()`
 }

@@ -1,4 +1,4 @@
-PKG_CPPFLAGS = -I. -I../inst/include -Wno-sign-compare -DARMA_64BIT_WORD
+PKG_CPPFLAGS = -I. -I../inst/include -DARMA_64BIT_WORD
 
 OBJECTS = \
 	RcppExports.o \

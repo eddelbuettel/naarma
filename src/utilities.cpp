@@ -93,7 +93,7 @@ void show_arma_vec(arma_vector_variant v) {
         }
     };
     std::visit(visitor, v);
-    std::cout << "Sum is " << reduce_arma_vec(v) << std::endl;
+    Rcpp::Rcout << "Sum is " << reduce_arma_vec(v) << std::endl;
 }
 
 enum ArrowType na_format_to_enum(const std::string& txt) {

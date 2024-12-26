@@ -21,6 +21,8 @@ vector columns. The framework used here could of course be extended to other Arr
 }
 
 \examples{
-sv <- vectorExample(R"({"name": "vec", "count": 3, "VALIDITY": [1, 1, 1], "DATA": [2, 3, 4]})", "g")
+sv <- vectorExample(R"({"name": "vec", "count": 3,
+                        "VALIDITY": [1, 1, 1],
+                        "DATA": [2, 3, 4]})", "g")
 armaVectorExample(sv)
 }

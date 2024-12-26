@@ -6,9 +6,9 @@
 #endif
 
 #include <variant>
-#include <armadillo>
-#include <nanoarrow/nanoarrow.hpp> 		// overall interface
+#include <nanoarrow/nanoarrow.hpp> 			// overall interface
 #include <nanoarrow/nanoarrow_testing.hpp>	// for from/to JSON utilities
+#include <RcppArmadillo/Lightest>			// also for Rcout/Rcerr, stop
 
 typedef std::variant<arma::Col<int16_t>,
                      arma::Col<uint16_t>,
@@ -25,27 +25,28 @@ arma_vector_variant na_to_arma(const struct ArrowArray* arr, const struct ArrowS
 template <typename T> arma::Col<T> na_array_to_arma_vec(const struct ArrowArray* arr);
 
 inline void show_array(const struct ArrowArray* arr) {
-    std::cout << "Array" << std::endl
-              << "  Length: " << arr->length << std::endl
-              << "  Null_count: " << arr->null_count << std::endl
-              << "  Offset: " << arr->offset << std::endl
-              << "  N_Buffers: " << arr->n_buffers << std::endl
-              << "  N_Children: " << arr->n_children << std::endl
-              << "  Dictionary: " << (arr->dictionary == nullptr ? "no" : "yes") << std::endl;
+    Rcpp::Rcout << "Array" << std::endl
+                << "  Length: " << arr->length << std::endl
+                << "  Null_count: " << arr->null_count << std::endl
+                << "  Offset: " << arr->offset << std::endl
+                << "  N_Buffers: " << arr->n_buffers << std::endl
+                << "  N_Children: " << arr->n_children << std::endl
+                << "  Dictionary: " << (arr->dictionary == nullptr ? "no" : "yes") << std::endl;
 }
 
 inline void show_schema(const struct ArrowSchema* sch) {
-    std::cout << "Schema" << std::endl
-              << "  Format: " << sch->format << std::endl
-              << "  Name: " << (sch->name != nullptr ? sch->name : "") << std::endl
-              << "  Flags: " << sch->flags << std::endl
-              << "  N_Children: " << sch->n_children << std::endl;
+    Rcpp::Rcout << "Schema" << std::endl
+                << "  Format: " << sch->format << std::endl
+                << "  Name: " << (sch->name != nullptr ? sch->name : "") << std::endl
+                << "  Flags: " << sch->flags << std::endl
+                << "  N_Children: " << sch->n_children << std::endl;
 }
 
 inline void error_exit(const std::string& txt) {
     // in a larger application we might throw, here we just report and exit
-    std::cerr << "ERROR: " << txt << std::endl;
-    exit(-1);
+    //std::cerr << "ERROR: " << txt << std::endl;
+    //exit(-1);
+    Rcpp::stop(txt);
 }
 
 inline void exitIfError(const ArrowErrorCode ec, const std::string& msg) {
@@ -76,5 +77,5 @@ inline void display_as_json(const struct ArrowArray* arr, const struct ArrowSche
     jsonwriter.WriteColumn(str_out, sch, array_view.get());
     str_out << std::endl;
 
-    std::cout << str_out.str();
+    Rcpp::Rcout << str_out.str();
 }
