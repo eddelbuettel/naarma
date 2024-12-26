@@ -260,6 +260,8 @@ Rcpp::NumericMatrix collectFromStream(Rcpp::RObject obj, bool verbose = false) {
     // struct ArrowArrayStream* str = (struct ArrowArrayStream*)R_ExternalPtrAddr(asxptr); // get ptr
     // ArrowArrayStreamMove(newstream.get(), str); 				// and move content
 
+
+    // TODO: assert all columns are in fact double
     int n = cnt, k = sch->n_children, chunks = vec.size(), currpos = 0;
     arma::mat m(n, k);
     for (auto i = 0; i < chunks; i++) {
