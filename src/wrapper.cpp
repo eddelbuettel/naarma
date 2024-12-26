@@ -262,23 +262,29 @@ arma::mat collectFromStream(Rcpp::RObject obj, bool verbose = false) {
     // ArrowArrayStreamMove(newstream.get(), str); 				// and move content
 
 
-    // TODO: assert all columns are in fact double
-    int n = cnt, k = sch->n_children, chunks = vec.size(), currpos = 0;
-    arma::mat m(n, k);
-    for (auto i = 0; i < chunks; i++) {
-        nanoarrow::UniqueArray arr = std::move(vec[i]);
-        for (auto j = 0; j < k; j++) {
+    // TODO: assert all columns are in fact double, else templatetize the segment
+    // TODO: assert no missing values
+    int n = cnt,                								// rows in the matrix we create
+        k = sch->n_children,                					// columns in the matrix we create
+        chunks = vec.size(),                					// number of arrow chunks used
+        currpos = 0;                        					// current row
+    if (verbose)
+        for (auto i = 0; i < k; i++)
+            Rcpp::Rcout << "Col " << i << " is " << std::string(sch->children[i]->format) << std::endl;
+
+    arma::mat m(n, k);                      					// new matrix
+    for (auto i = 0; i < chunks; i++) {                         // over all chunkss
+        nanoarrow::UniqueArray arr = std::move(vec[i]);         // access array
+        for (auto j = 0; j < k; j++) {                          // over all columns
             if (verbose)
                 Rcpp::Rcout << "Chunk " << i << " "
                             << "currpos " << currpos << " "
                             << "col " << j << std::endl;
-            double* mem = m.colptr(j);
-            double* colptr = (double*) arr->children[j]->buffers[1];
-            std::memcpy((void*) &(mem[currpos]),
-                        (void*) &(colptr[currpos]),
-                        arr->length * sizeof(double));
+            arma::vec v = na_pointers_to_arma_vec(arr->children[j],
+                                                  sch->children[j]);
+            m.submat(currpos, j, currpos + arr->length - 1, j) = v;
         }
-        currpos += arr->length;
+        currpos += arr->length; 								// account for
     }
     if (verbose) m.print("m");
     return m;
