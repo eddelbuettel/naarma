@@ -167,17 +167,6 @@ arma::mat collectMatrixFromStream(Rcpp::RObject obj, bool verbose = false) {
     if (verbose) Rcpp::Rcout << "Final Count is " << cnt << " "
                              << "Cols is " << sch->n_children << std::endl;
 
-    // This constructs a new array stream from the vector
-    // nanoarrow::VectorArrayStream vas(sch.get(), std::move(vec));// make vectorstream from schema and vector<uniquearrays>
-    // nanoarrow::UniqueArrayStream newstream;                     // create new arraystream (to coontain single element stream)
-    // vas.ToArrayStream(newstream.get());                         // export the vectorstream to the new array strea,
-
-    // auto asxptr = nanoarrow_array_stream_owning_xptr();			// prepare xptr
-
-    // struct ArrowArrayStream* str = (struct ArrowArrayStream*)R_ExternalPtrAddr(asxptr); // get ptr
-    // ArrowArrayStreamMove(newstream.get(), str); 				// and move content
-
-
     // TODO: assert no missing values
     int n = cnt,                								// rows in the matrix we create
         k = sch->n_children,                					// columns in the matrix we create

@@ -11,4 +11,5 @@ Description: The nanoarrow package offers C-level functionality to work with Arr
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.11), nanoarrow
 LinkingTo: Rcpp, RcppArmadillo, nanoarrow
+Suggests: tinytest
 RoxygenNote: 6.0.1
