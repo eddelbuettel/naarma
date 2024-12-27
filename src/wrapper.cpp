@@ -46,6 +46,13 @@ arma::Col<double> na_pointers_to_arma_vec(struct ArrowArray* arr, struct ArrowSc
     } else if (sch->format == std::string_view("f")) {
         auto w = na_array_to_arma_vec<float>(arr);
         v = arma::conv_to<arma::Col<double>>::from(w);
+    } else if (sch->format == std::string_view("u") || // turn string vectors into factor ints
+               sch->format == std::string_view("U")) {
+        auto w = na_array_strings_to_arma_vec(arr);
+        v = arma::conv_to<arma::Col<double>>::from(w);
+    } else if (sch->format == std::string_view("tsu:UTC")) {   // this is but many timedata formats...
+        auto w = na_array_to_arma_vec<int64_t>(arr);           // we need different scale factors
+        v = arma::conv_to<arma::Col<double>>::from(w) * 1e-6;
     } else {
         error_exit(std::string("format '") + std::string(sch->format) + std::string("' not supported"));
     }

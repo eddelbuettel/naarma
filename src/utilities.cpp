@@ -92,3 +92,40 @@ enum ArrowType na_format_to_enum(const std::string& txt) {
         return NANOARROW_TYPE_UNINITIALIZED; // not reached, but satisfies compiler ...
     }
 }
+
+arma::ivec na_array_strings_to_arma_vec(const struct ArrowArray* arr) {
+
+    nanoarrow::UniqueArrayView av;
+    ArrowArrayViewInitFromType(av.get(), NANOARROW_TYPE_STRING);
+    exitIfError(ArrowArrayViewSetArray(av.get(), arr, nullptr), "cannot init array view");
+
+    ArrowStringView item;
+    size_t nl = arr->length;
+    std::vector<std::string> strings;
+    for (size_t i = 0; i < nl; i++) {
+        item = ArrowArrayViewGetStringUnsafe(av.get(), i);
+        strings.push_back(std::string(item.data, item.size_bytes));
+    }
+
+    std::unordered_map<std::string, int> level_map;		// map of string to factor level int
+    std::vector<std::string> levels;                    // vector of unique levels
+
+    for (const auto& str : strings) {					// create unique sorted levels
+        if (level_map.find(str) == level_map.end()) {
+            level_map[str] = levels.size();
+            levels.push_back(str);
+        }
+    }
+    std::sort(levels.begin(), levels.end()); 			// sort them
+    nl = levels.size();
+    for (size_t i = 0; i < nl; i++) {					// update level_map to reflect sorted levels
+        level_map[levels[i]] = i;
+    }
+
+    size_t ns = strings.size();							// create factor vector of required size
+    arma::ivec factors(ns);
+    for (size_t i = 0; i < ns; i++) {
+        factors[i] = level_map[strings[i]] + 1; 		// store level adjusting to R index start at 1
+    }
+    return factors;
+}

@@ -22,6 +22,7 @@ typedef std::variant<arma::Col<int16_t>,
 enum ArrowType na_format_to_enum(const std::string& txt);
 arma_vector_variant na_to_arma(const struct ArrowArray* arr, const struct ArrowSchema* sch);
 template <typename T> arma::Col<T> na_array_to_arma_vec(const struct ArrowArray* arr);
+arma::ivec na_array_strings_to_arma_vec(const struct ArrowArray* arr);
 
 inline void show_array(const struct ArrowArray* arr) {
     Rcpp::Rcout << "Array" << std::endl
