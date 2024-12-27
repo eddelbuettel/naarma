@@ -4,6 +4,10 @@ library(nanoarrow)
 
 values <- 4:7
 
+expect_equal(armaVectorExample(as_nanoarrow_array(values)), values)
+
+if (!requireNamespace("arrow", quietly=TRUE)) exit_file("Schema use requires 'arrow' package")
+
 expect_equal(armaVectorExample(as_nanoarrow_array(values, schema=na_int16())), values)
 expect_equal(armaVectorExample(as_nanoarrow_array(values, schema=na_uint16())), values)
 expect_equal(armaVectorExample(as_nanoarrow_array(values, schema=na_int32())), values)

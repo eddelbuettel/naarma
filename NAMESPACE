@@ -1,4 +1,4 @@
 useDynLib(naarma, .registration=TRUE)
+import(nanoarrow)
 importFrom(Rcpp, evalCpp)
 exportPattern("^[[:alpha:]]+")
-import(nanoarrow)

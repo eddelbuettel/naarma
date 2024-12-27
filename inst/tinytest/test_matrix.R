@@ -5,6 +5,10 @@ library(nanoarrow)
 values <- 1:9
 expected_mat <- matrix(values, 3, 3, byrow=FALSE)
 
+expect_equal(armaMatrixExample(as_nanoarrow_array(values), 3), expected_mat)
+
+if (!requireNamespace("arrow", quietly=TRUE)) exit_file("Schema use requires 'arrow' package")
+
 expect_equal(armaMatrixExample(as_nanoarrow_array(values, schema=na_int16()), 3), expected_mat)
 expect_equal(armaMatrixExample(as_nanoarrow_array(values, schema=na_uint16()), 3), expected_mat)
 expect_equal(armaMatrixExample(as_nanoarrow_array(values, schema=na_int32()), 3), expected_mat)
