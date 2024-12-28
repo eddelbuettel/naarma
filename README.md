@@ -2,6 +2,8 @@
 ## naarma: nanoarrow to armadillo integration
 
 [![CI](https://github.com/eddelbuettel/naarma/workflows/ci/badge.svg)](https://github.com/eddelbuettel/naarma/actions?query=workflow%3Aci)
+[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![r-universe](https://eddelbuettel.r-universe.dev/badges/naarma)](https://eddelbuettel.r-universe.dev/naarma)
 
 ### Motivation
 
@@ -45,8 +47,16 @@ The code is provided as an R package so a standard installation from the reposit
 remotes::install_packages("naarma")
 ```
 
-should work. The only dependencies to install the package are three other standard packages, namely
-`Rcpp`, `RcppArmadillo`, `nanoarrow`.
+work. The only dependencies to install the package are three other standard packages, namely `Rcpp`,
+`RcppArmadillo`, `nanoarrow`.
+
+The package can also be installed from its [r-universe][runiverse] repository via
+
+```r
+install.packages('naarma', repos = c('https://eddelbuettel.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
+(as well as as an Ubuntu binary, see [the docs on that][runiverseubuntu]).
 
 ### Author
 
@@ -65,6 +75,8 @@ GPL (>= 2)
 [arrow]: https://arrow.apache.org/
 [nanoarrow]: https://github.com/apache/arrow-nanoarrow
 [cdata]: https://arrow.apache.org/docs/format/CDataInterface.html
+[runiverse]: https://eddelbuettel.r-universe.dev/naarma
+[runiverseubuntu]: https://docs.r-universe.dev/install/binaries.html#does-r-universe-have-linux-binaries
 [example1]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/adbcExMlpack.R
 [example2]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/polarsExMlpack.R
 [example3]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/arrowExMlpack.R
