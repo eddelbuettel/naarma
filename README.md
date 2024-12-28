@@ -50,13 +50,15 @@ remotes::install_packages("naarma")
 work. The only dependencies to install the package are three other standard packages, namely `Rcpp`,
 `RcppArmadillo`, `nanoarrow`.
 
-The package can also be installed from its [r-universe][runiverse] repository via
+Moreover, the package can be installed (as binary, where available, or source) from its
+[r-universe][runiverse] repository via
 
 ```r
-install.packages('naarma', repos = c('https://eddelbuettel.r-universe.dev', 'https://cloud.r-project.org'))
+urls <- c("https://eddelbuettel.r-universe.dev", "https://cloud.r-project.org")
+install.packages('naarma', repos = urls)
 ```
 
-(as well as as an Ubuntu binary, see [the docs on that][runiverseubuntu]).
+and is also available as an Ubuntu binary, see [the docs for that][runiverseubuntu]).
 
 ### Author
 
