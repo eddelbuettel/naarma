@@ -18,13 +18,22 @@ matrices (and vectors) from the 'streamed' representation available from (nano)a
 
 Our [first example][example1] accesses the [mlpack][mlpack] data for its introductory random forest
 example _directly off the compressed files on the website_ into [duckdb][duckdb] (using standard
-in-memory representation), exports to [nanoarrow][nanarrow] _array streams_ which are then converted
-to [armadillo][armadillo] matrices. We note that while [mlpack][mlpack] is heavily templated, the
-standard representation is still `double`. But more importantly
-- no data is ever manifested on disk, the example can live 'on the edge'
+in-memory representation), exports to [nanoarrow][nanarrow] _array streams_ (also in memory) which
+are then converted to [armadillo][armadillo] matrices which [mlpack][mlpack] uses. (We note that
+while [mlpack][mlpack] is heavily templated, the standard representation is still `double` which
+simplifies the interface; extensions are possible/planned).
+
+But more importantly
+- no data is ever manifested on disk, the example can live 'on the edge' in pure compute nodes
 - while driven from R (because that is what I like) all the data sits in Arrow types allowing a
-  fuller vocabulary of types where needed (_i.e._ `uint16_t`)
+  fuller vocabulary of types where needed (_i.e._ `uint16_t` or any type other than the default
+  signed integer, ditto for `float`).
 - this should be easily extensible to 'Arrow over RPC'
+
+A [second example][example2] redoes this from [polars][polars].
+A [third example][example3] shows how to load the NYC 'flights' dataset, demonstrating that fuller
+data frame objects can be loaded too (as we add a simple 'turn to factor levels' converter, care
+must of course be taken interpreting these levels as `double` variables).
 
 ### Installation
 
@@ -55,3 +64,5 @@ GPL (>= 2)
 [nanoarrow]: https://github.com/apache/arrow-nanoarrow
 [cdata]: https://arrow.apache.org/docs/format/CDataInterface.html
 [example1]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/adbcExMlpack.R
+[example2]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/polarsExMlpack.R
+[example3]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/adbcExFlight.R
