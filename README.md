@@ -9,7 +9,7 @@
 C++ code that is easy to deploy.  Getting data into [mlpack][mlpack] can be straightforward, for
 example from csv files.  These days, data can live in many places and formats and many excellent
 data readers are available: [duckdb][duckdb], [polars][polars], and many more are available and
-generally provide [Arrow][arrow] (columnar) binary representation interfaces making the choice of
+generally provide [arrow][arrow] (columnar) binary representation interfaces making the choice of
 data reader less relevant as _the interface_ is what matters.
 
 Here we examine the use of the neat [nanoarrow][nanoarrow] package and its use of the (portable,
@@ -30,8 +30,10 @@ But more importantly
   signed integer, ditto for `float`).
 - this should be easily extensible to 'Arrow over RPC'
 
-A [second example][example2] redoes this from [polars][polars].
-A [third example][example3] shows how to load the NYC 'flights' dataset, demonstrating that fuller
+A [second example][example2] redoes this from [polars][polars]; a [third example][example3] directly
+from [arrow][arrow].
+
+A [fourth example][example3] shows how to load the NYC 'flights' dataset, demonstrating that fuller
 data frame objects can be loaded too (as we add a simple 'turn to factor levels' converter, care
 must of course be taken interpreting these levels as `double` variables).
 
@@ -65,4 +67,5 @@ GPL (>= 2)
 [cdata]: https://arrow.apache.org/docs/format/CDataInterface.html
 [example1]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/adbcExMlpack.R
 [example2]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/polarsExMlpack.R
-[example3]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/adbcExFlight.R
+[example3]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/arrowExMlpack.R
+[example4]: https://github.com/eddelbuettel/naarma/blob/master/inst/examples/adbcExFlight.R
