@@ -7,7 +7,7 @@
 
 #include <variant>
 #include <nanoarrow/nanoarrow.hpp> 			// overall interface
-#include <RcppArmadillo/Lightest>			// also for Rcout/Rcerr, stop
+#include <RcppArmadillo/Lighter>			// also for Rcout/Rcerr, stop
 
 typedef std::variant<arma::Col<int16_t>,
                      arma::Col<uint16_t>,
